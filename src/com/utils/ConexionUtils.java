@@ -12,7 +12,7 @@ import org.mariadb.jdbc.Connection;
  */
 public class ConexionUtils {
 
-	public ResultSet listarTabla(String sqlQuery) {
+	public static ResultSet listarTabla(String sqlQuery) {
 		try {
 
 			PreparedStatement preparedStat = null;
