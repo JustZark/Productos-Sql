@@ -4,6 +4,15 @@
  */
 package com.vistas;
 
+import com.conexion.ConexionDB;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import org.mariadb.jdbc.Connection;
+
 /**
  *
  * @author 57320
@@ -17,18 +26,73 @@ public class VistaPrincipal extends javax.swing.JFrame {
             setLocationRelativeTo(this);
             setTitle("Productos");
             initComponents();
-            
-            
+            actualizarTabla(null);
 	}
         
-        private void logicaBoton(){
-            String campo = "el texto en campo"
-            String where = "";
+        private void logicaBotonBuscar(){
+            String campo = txt.getText();
+            String where = null;
             if (!campo.equals("")) {
                 where = "WHERE codigo = '"+campo+"'";
             }
+            actualizarTabla(where);
+        }
+        
+        private void logicaBotonCrear(){
+            String sku = txt.getText();
+            String nombre = txt.getText();
+            String precio = txt.getText();
+            String distribuidor = txt.getText();
+            String categorias = txt.getText();
             
+            if (!precio.esNumero()) {
+                JOptionPane.showMessageDialog(null, "El precio debe ser escrito en dígitos");
+                return;
+            }
             
+            String sql = "INSERT INTO `estudiantes` (`nombre`, `edad`, `cedula`, `codigo`, `id`) VALUES ('Dejan Stankovic', '23', '76132', '12', NULL);";
+        }
+        
+        private void actualizarTabla(String where) {
+            try {
+                DefaultTableModel modelo = new DefaultTableModel();
+                tablaEstudiantes.setModel(modelo);
+
+                PreparedStatement ps = null;
+                ResultSet rs = null;
+                ConexionDB conDb = new ConexionDB();
+                Connection con = conDb.getConexion();
+
+                String sql = "SELECT * FROM estudiantes";
+                if (where != null) {
+                    sql += " "+where;
+                }
+                ps = con.prepareStatement(sql);
+                rs = ps.executeQuery();
+
+                ResultSetMetaData rsMd = (ResultSetMetaData) rs.getMetaData();
+                int cantidadColumnas = rsMd.getColumnCount();
+
+                modelo.addColumn("SKU:");
+                modelo.addColumn("Nombre:");
+                modelo.addColumn("Precio:");
+                modelo.addColumn("Distribuidor:");
+                modelo.addColumn("Categorias:");
+
+                int[] anchos = {50, 50, 50, 50, 50};
+                for (int i = 0; i < tablaEstudiantes.getColumnCount(); i++) {
+                    tablaEstudiantes.getColumnModel().getColumn(i).setPreferredWidth(anchos[1]);
+                }
+                while (rs.next()) {
+                    Object[] filas = new Object[cantidadColumnas];
+                    for (int i = 0; i < cantidadColumnas; i++) {
+                        filas[i] = rs.getObject(i + 1);
+                    }
+                    modelo.addRow(filas);
+                }
+            } catch (SQLException e) {
+                System.err.println(e.toString());
+            }
         }
 
 	/**
