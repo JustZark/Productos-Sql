@@ -14,8 +14,22 @@ public class VistaPrincipal extends javax.swing.JFrame {
 	 * Creates new form VistaPrincipal
 	 */
 	public VistaPrincipal() {
-		initComponents();
+            setLocationRelativeTo(this);
+            setTitle("Productos");
+            initComponents();
+            
+            
 	}
+        
+        private void logicaBoton(){
+            String campo = "el texto en campo"
+            String where = "";
+            if (!campo.equals("")) {
+                where = "WHERE codigo = '"+campo+"'";
+            }
+            
+            
+        }
 
 	/**
 	 * This method is called from within the constructor to initialize the
