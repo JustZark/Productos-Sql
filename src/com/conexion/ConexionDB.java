@@ -34,23 +34,4 @@ public class ConexionDB {
 		return con;
 	}
 
-	public ResultSet listarTabla(String sqlQuery) {
-		try {
-			
-			PreparedStatement preparedStat = null;
-			ResultSet resultSet = null;
-
-			ConexionDB conexionD = new ConexionDB();
-			Connection con = conexionD.getConexion();
-
-			preparedStat = con.prepareStatement(sqlQuery);
-			return preparedStat.executeQuery();
-			
-		} catch (SQLException ex) {
-			System.err.println(ex.toString());
-		}
-		
-		return null;
-	}
-
 }
